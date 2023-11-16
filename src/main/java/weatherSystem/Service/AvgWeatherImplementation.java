@@ -51,7 +51,6 @@ public class AvgWeatherImplementation implements AvgWeatherRepository {
     @Override
     public void saveAvgToDatabase(AvgWeather avgWeatherData) {
         try {
-            Session session = Connection.sessionFactory.openSession();
             session.beginTransaction();
             session.persist(avgWeatherData);
             System.out.println("Weather data successfully saved to database.");
