@@ -61,7 +61,7 @@ public class AvgWeatherImplementation implements AvgWeatherRepository {
     }
 
     public List<Weather> getWeatherByNameAndDate(String cityName, String date) {
-        try (Session session = Connection.sessionFactory.openSession()) {
+        try {
             return session.createQuery("SELECT w FROM Weather w WHERE w.cityName = :cityName AND w.date = :date", Weather.class)
                     .setParameter("cityName", cityName)
                     .setParameter("date", date)
