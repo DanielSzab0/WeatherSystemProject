@@ -29,7 +29,6 @@ public class WeatherImplementation implements WeatherRepository {
     @Override
     public void saveToDatabase(Weather weatherData) {
         try {
-            Session session = Connection.sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
             session.persist(weatherData);
             transaction.commit();

@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AvgWeather extends BaseIdClass{
-//    @OneToOne(mappedBy = "id")
-//    private Location locationId;
     private String cityName;
     private String date;
     private String windDirection;

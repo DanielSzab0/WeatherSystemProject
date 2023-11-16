@@ -20,15 +20,5 @@ public class Weather extends BaseIdClass{
     private int windSpeed;
     private int pressure;
     private int humidity;
-
-//    public Weather(Location location,String cityName, String date, String windDirection, int windSpeed, int temperature, int pressure, int humidity) {
-//        this.location = location;
-//        this.cityName = cityName;
-//        this.date = date;
-//        this.windDirection = windDirection;
-//        this.windSpeed = windSpeed;
-//        this.temperature = temperature;
-//        this.pressure = pressure;
-//        this.humidity = humidity;
-//    }
+    
 }

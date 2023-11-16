@@ -17,14 +17,6 @@ public class Location extends BaseIdClass{
     private double lat;
     private double lon;
 
-//    public Location(String cityName, String region, String countryName, double latitude, double longitude) {
-//        this.cityName = cityName;
-//        this.region = region;
-//        this.countryName = countryName;
-//        this.lat = latitude;
-//        this.lon = longitude;
-//    }
-
     public void validate() throws IllegalArgumentException {
         if (cityName == null || cityName.trim().isEmpty()) {
             throw new IllegalArgumentException("City name cannot be empty");
