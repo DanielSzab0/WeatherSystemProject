@@ -14,6 +14,7 @@ public class Main {
 
         LocationImplementation locationImplementation = new LocationImplementation();
         WeatherImplementation weatherImplementation = new WeatherImplementation();
+        AvgWeatherImplementation avgWeather = new AvgWeatherImplementation();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -113,7 +114,6 @@ public class Main {
                     cityName = scanner.nextLine();
                     System.out.println("Enter the date:");
                     date = scanner.nextLine();
-                    AvgWeatherImplementation avgWeather = new AvgWeatherImplementation();
                     avgWeather.calculatAarage(cityName, date);
                     break;
 

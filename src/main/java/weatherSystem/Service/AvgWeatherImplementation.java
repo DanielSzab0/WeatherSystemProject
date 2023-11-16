@@ -2,27 +2,21 @@ package weatherSystem.Service;
 
 import org.hibernate.query.Query;
 import weatherSystem.Entity.AvgWeather;
-import weatherSystem.Entity.Location;
 import weatherSystem.Entity.Weather;
 import weatherSystem.Repository.AvgWeatherRepository;
-import jakarta.persistence.EntityManager;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
 import weatherSystem.connection.Connection;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class AvgWeatherImplementation implements AvgWeatherRepository {
-    Connection connection = Connection.getInstance();
-
-    private EntityManager entityManager = connection.sessionFactory.createEntityManager();
+    private final Session session = Connection.sessionFactory.openSession();
 
     @Override
     public void calculatAarage(String cityName, String date) {
-        try (Session session = connection.sessionFactory.openSession()) {
+        try{
             Transaction transaction = session.beginTransaction();
 
             Query<Object[]> query = session.createQuery(
@@ -57,7 +51,7 @@ public class AvgWeatherImplementation implements AvgWeatherRepository {
     @Override
     public void saveAvgToDatabase(AvgWeather avgWeatherData) {
         try {
-            Session session = connection.sessionFactory.openSession();
+            Session session = Connection.sessionFactory.openSession();
             session.beginTransaction();
             session.persist(avgWeatherData);
             System.out.println("Weather data successfully saved to database.");
@@ -67,7 +61,7 @@ public class AvgWeatherImplementation implements AvgWeatherRepository {
     }
 
     public List<Weather> getWeatherByNameAndDate(String cityName, String date) {
-        try (Session session = connection.sessionFactory.openSession()) {
+        try (Session session = Connection.sessionFactory.openSession()) {
             return session.createQuery("SELECT w FROM Weather w WHERE w.cityName = :cityName AND w.date = :date", Weather.class)
                     .setParameter("cityName", cityName)
                     .setParameter("date", date)

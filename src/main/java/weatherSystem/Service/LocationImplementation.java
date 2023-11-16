@@ -10,12 +10,12 @@ import weatherSystem.connection.Connection;
 import java.util.List;
 
 public class LocationImplementation implements LocationRepository {
-    Connection connection = Connection.getInstance();
+    private final EntityManager entityManager = Connection.sessionFactory.createEntityManager();
+    private final Session session = Connection.sessionFactory.openSession();
 
     @Override
     public void addLocation(Location location) {
         try {
-            EntityManager entityManager = connection.sessionFactory.createEntityManager();
             entityManager.getTransaction().begin();
             entityManager.persist(location);
             location.validate();
@@ -28,14 +28,13 @@ public class LocationImplementation implements LocationRepository {
 
     @Override
     public List<Location> getLocations() {
-        EntityManager entityManager  = connection.sessionFactory.createEntityManager();
         List<Location> locations = entityManager.createQuery("FROM Location", Location.class).getResultList();
         locations.forEach(loc-> System.out.println(loc.getId()+ ". " +loc.getCityName()+ ", " +loc.getCountryName() + "."));
         return locations;
     }
 
     public void editLocation(String cityName, String newCityName) {
-        try (Session session = connection.sessionFactory.openSession()) {
+        try {
             session.beginTransaction();
             Query query = session.createQuery("UPDATE Location l SET l.cityName = :newCityName " + "WHERE l.cityName = :cityName")
                     .setParameter("cityName", cityName)
