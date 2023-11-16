@@ -18,7 +18,7 @@ import java.net.URL;
 import java.util.List;
 
 public class WeatherImplementation implements WeatherRepository {
-    private final Session session = Connection.sessionFactory.openSession();
+     Session session = Connection.sessionFactory.openSession();
     private static final String WEATHERSTACK_API_KEY = "8ebca2f498ca14abd209c784636ad015";
     private static final String WEATHERSTACK_API_URL = "http://api.weatherstack.com/current";
 

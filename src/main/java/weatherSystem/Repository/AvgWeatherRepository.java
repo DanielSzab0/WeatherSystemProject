@@ -4,5 +4,5 @@ import weatherSystem.Entity.AvgWeather;
 
 public interface AvgWeatherRepository{
     void calculatAarage(String cityName, String date);
-    void saveAvgToDatabase(AvgWeather avgWeatherData);
+//    void saveAvgToDatabase(AvgWeather avgWeatherData);
 }

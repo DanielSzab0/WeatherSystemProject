@@ -4,6 +4,7 @@ import weatherSystem.Entity.Location;
 import weatherSystem.Entity.Weather;
 import weatherSystem.Service.AvgWeatherImplementation;
 import weatherSystem.Service.LocationImplementation;
+import weatherSystem.Service.ToFileService;
 import weatherSystem.Service.WeatherImplementation;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ public class Main {
         LocationImplementation locationImplementation = new LocationImplementation();
         WeatherImplementation weatherImplementation = new WeatherImplementation();
         AvgWeatherImplementation avgWeather = new AvgWeatherImplementation();
+        ToFileService toFileService = new ToFileService();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -26,7 +28,8 @@ public class Main {
                     "4. To insert weather values.\n" +
                     "5. To retrieve average values.\n" +
                     "6. To retrieve weather statistics by period.\n" +
-                    "7. To exit.");
+                    "7. To Create a file and save data to it.\n" +
+                    "8. To exit.");
             int optNo = scanner.nextInt();
             scanner.nextLine();
 
@@ -124,6 +127,15 @@ public class Main {
                     break;
 
                 case 7:
+                    System.out.println("Enter the file name.");
+                    String fileName = scanner.nextLine();
+                    toFileService.createFile(fileName);
+                    System.out.println("Enter the date for period to save the statistics in to the file");
+                    date = scanner.nextLine();
+                    toFileService.writeStatisticsToFile(date);
+                    break;
+
+                case 8:
                     System.out.println("Exiting...");
                     scanner.close();
                     System.exit(0);
