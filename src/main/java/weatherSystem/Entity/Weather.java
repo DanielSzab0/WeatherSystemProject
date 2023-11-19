@@ -15,10 +15,10 @@ public class Weather extends BaseIdClass{
     private Location location;
     private String cityName;
     private String date;
+    private int humidity;
+    private int pressure;
     private int temperature;
     private String windDirection;
     private int windSpeed;
-    private int pressure;
-    private int humidity;
-    
+
 }

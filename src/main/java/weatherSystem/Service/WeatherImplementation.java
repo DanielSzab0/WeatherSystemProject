@@ -15,10 +15,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 
 public class WeatherImplementation implements WeatherRepository {
-     Session session = Connection.sessionFactory.openSession();
+    private final Session session = Connection.sessionFactory.openSession();
     private static final String WEATHERSTACK_API_KEY = "8ebca2f498ca14abd209c784636ad015";
     private static final String WEATHERSTACK_API_URL = "http://api.weatherstack.com/current";
 
@@ -55,7 +56,7 @@ public class WeatherImplementation implements WeatherRepository {
         return response.toString();
     }
 
-    private Weather parseResponse(String jsonResponse, String date, String location) throws IOException {
+    private Weather parseResponse(String jsonResponse, String date, String cityName) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(jsonResponse);
 
@@ -66,10 +67,10 @@ public class WeatherImplementation implements WeatherRepository {
         String windDirection = rootNode.path("current").path("wind_dir").asText();
         Weather weather = new Weather();
         weather.setDate(date);
-        Location weatherLocation = getLocationByName(location);
+        Location weatherLocation = getLocationByName(cityName);
         weather.setLocation(weatherLocation);
-        weather.setCityName(location);
-        return new Weather(weatherLocation, location, date, windSpeed, windDirection, temperature, pressure, humidity);
+        weather.setCityName(cityName);
+        return new Weather(weatherLocation, cityName, date, humidity, windSpeed, pressure, windDirection, temperature);
     }
 
 
@@ -109,16 +110,18 @@ public class WeatherImplementation implements WeatherRepository {
 
     public List<Weather> getStatisticsByPeriod(String date) {
         try {
-            List<Weather> weathers = session.createQuery("FROM Weather w WHERE w.date = :date", Weather.class)
+            List<Weather> weathers = session.createQuery("SELECT w FROM Weather w WHERE w.date = :date", Weather.class)
                     .setParameter("date", date)
                     .getResultList();
             weathers.forEach(w ->
                     System.out.println(w.getId() + ". " + w.getDate() + ", " + w.getCityName() + ", Temperature: " +
                             w.getTemperature() + ", Humidity: " + w.getHumidity() + ", Pressure: " + w.getPressure() +
                             ", Wind speed: " + w.getWindSpeed() + ", Wind direction: " + w.getWindDirection() + "."));
-
+            System.out.println();
+            System.out.println(Arrays.toString(new List[]{weathers}));
             return weathers;
         } catch (Exception e) {
+            System.out.println("Invalid data input");
             e.printStackTrace();
             return null;
         }

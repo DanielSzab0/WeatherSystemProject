@@ -8,7 +8,7 @@ import weatherSystem.Entity.Weather;
 
 
 public class Connection {
-    private final static Connection instance = new Connection();
+    private static Connection instance = new Connection();
     private Connection() {}
 
     public synchronized static Connection getInstance() {

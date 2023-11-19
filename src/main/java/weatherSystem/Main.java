@@ -1,5 +1,8 @@
 package weatherSystem;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import weatherSystem.Entity.Location;
 import weatherSystem.Entity.Weather;
 import weatherSystem.Service.AvgWeatherImplementation;
@@ -8,10 +11,31 @@ import weatherSystem.Service.ToFileService;
 import weatherSystem.Service.WeatherImplementation;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+
+    public void readCSVFile(String fileName) {
+        try {
+            CSVParser csvParser = CSVFormat.DEFAULT.parse(Files.newBufferedReader(Paths.get(fileName)));
+
+            for (CSVRecord csvRecord : csvParser) {
+                String cityName = csvRecord.get(0);
+                String date = csvRecord.get(1);
+
+                System.out.println("City: " + cityName + ", Date: " + date);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+
+//        Main yourClass = new Main();
+//        yourClass.readCSVFile("file_data.csv");
 
         LocationImplementation locationImplementation = new LocationImplementation();
         WeatherImplementation weatherImplementation = new WeatherImplementation();
@@ -28,8 +52,9 @@ public class Main {
                     "4. To insert weather values.\n" +
                     "5. To retrieve average values.\n" +
                     "6. To retrieve weather statistics by period.\n" +
-                    "7. To Create a file and save data to it.\n" +
-                    "8. To exit.");
+                    "7. To create a file or save data into a file.\n" +
+                    "8. To restore data from file to database\n" +
+                    "9. To exit.");
             int optNo = scanner.nextInt();
             scanner.nextLine();
 
@@ -78,6 +103,7 @@ public class Main {
                     System.out.println("Please chose:\n" +
                             "1. To download the weather data from internet.\n" +
                             "2. To insert manually the weather data from keyboard.");
+
                     int opt = scanner.nextInt();
                     if (opt == 1 || opt == 2) {
                         switch (opt) {
@@ -127,15 +153,48 @@ public class Main {
                     break;
 
                 case 7:
-                    System.out.println("Enter the file name.");
-                    String fileName = scanner.nextLine();
-                    toFileService.createFile(fileName);
-                    System.out.println("Enter the date for period to save the statistics in to the file");
-                    date = scanner.nextLine();
-                    toFileService.writeStatisticsToFile(date);
+                    System.out.println("Please chose:\n" +
+                            "1. To create a new file.\n" +
+                            "2. To save data to a file.");
+
+                    opt = scanner.nextInt();
+                    scanner.nextLine();
+
+                    if (opt == 1 || opt == 2) {
+                        switch (opt) {
+                            case 1:
+                                System.out.println("Enter the file name.");
+                                String fileName = scanner.nextLine().trim();
+
+                                toFileService.createFile(fileName);
+                                break;
+
+                            case 2:
+                                System.out.println("Enter the file name to save data into it.");
+                                fileName = scanner.nextLine();
+                                System.out.println("Enter the date for statistics to save into the file");
+                                date = scanner.nextLine();
+                                System.out.println("Enter the city name for statistics to save into the file");
+                                cityName = scanner.nextLine();
+                                toFileService.writeDataToFile(fileName, date, cityName);
+                                break;
+                        }
+                    } else {
+                        System.out.println("Invalid option. You have to chose 1 or 2.");
+                    }
                     break;
 
                 case 8:
+                    System.out.println("Enter tha file name to restore data from:");
+                    String fileName = scanner.nextLine();
+                    System.out.println("Enter the date for which to restore data:");
+                    date = scanner.nextLine();
+                    System.out.println("Enter a city name corresponding to date:");
+                    cityName = scanner.nextLine();
+                    toFileService.restoreWeatherFromFileToDatabase(fileName, date, cityName);
+                    break;
+
+                case 9:
                     System.out.println("Exiting...");
                     scanner.close();
                     System.exit(0);

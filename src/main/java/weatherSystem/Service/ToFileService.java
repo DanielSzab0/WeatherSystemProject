@@ -1,73 +1,132 @@
 package weatherSystem.Service;
 
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
+import com.opencsv.exceptions.CsvValidationException;
 import org.hibernate.Session;
+
+
+import weatherSystem.Entity.Location;
+import weatherSystem.Entity.Weather;
 import weatherSystem.connection.Connection;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ToFileService {
-    private static Session session = Connection.sessionFactory.openSession();
+    private final static Session session = Connection.sessionFactory.openSession();
 //    LocationImplementation locationImplementation = new LocationImplementation();
-    WeatherImplementation weatherImplementation = new WeatherImplementation();
 
-    String fileName;
+    private WeatherImplementation weatherImplementation = new WeatherImplementation();
+
     public void createFile(String fileName) {
         try {
-            this.fileName = fileName;
-            File myObj = new File(fileName);
-            if (myObj.createNewFile()) {
-                System.out.println("File created: " + myObj.getName());
-            } else {
-                System.out.println("File already exists.");
-            }
+            File file = new File(fileName);
+
+                if (file.createNewFile()) {
+                    System.out.println("File created: " + fileName);
+                } else {
+                    System.out.println("File already exists.");
+                }
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
     }
 
-    public void writeStatisticsToFile(String date) {
-        try {
-            String data = weatherImplementation.getStatisticsByPeriod(date).toString();
-            FileWriter myWriter = new FileWriter(fileName);
-            myWriter.write(data);
-            myWriter.close();
-            System.out.println("Successfully wrote to the file.");
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-    }
-
-    public void insertDataFromFile(String fileName) {
-        FileInputStream fis = null;
-        PreparedStatement pstmt = null;
-        Connection conn = null;
-        try {
+    public void writeDataToFile(String fileName, String date, String cityName) {
+        try(CSVWriter csvWriter = new CSVWriter(new FileWriter(fileName))) {
             session.beginTransaction();
-            File filename1 = new File(fileName);
-            filename1.getPath();
-            session.createQuery("");
-        fis = new FileInputStream(filename1);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+
+            List<String[]> selectedData =new ArrayList<>();
+
+            List<Object[]> weathers = session.createQuery(
+                            "SELECT w.cityName, w.date, w.humidity, w.pressure, w.temperature, w.windDirection, w.windSpeed " +
+                                    "FROM Weather w " +
+                                    "WHERE w.date = :date AND w.cityName = :cityName", Object[].class)
+                    .setParameter("date", date)
+                    .setParameter("cityName", cityName)
+                    .getResultList();
+
+            for (Object[] row : weathers) {
+                String[] rows = {
+                        String.valueOf(row[0]),
+                        String.valueOf(row[1]),
+                        String.valueOf(row[2]),
+                        String.valueOf(row[3]),
+                        String.valueOf(row[4]),
+                        String.valueOf(row[5]),
+                        String.valueOf(row[6]),
+                };
+                selectedData.add(rows);
+            }
+            csvWriter.writeAll(selectedData);
+            System.out.println("Successfully wrote to the file.");
+
+            session.getTransaction().commit();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
         }
     }
 
-//    public void writeLocationToFile() {
-//        try {
-//            String data = locationImplementation.getLocations().toString();
-//            FileWriter myWriter = new FileWriter("data_file.txt");
-//            myWriter.write(data);
-//            myWriter.close();
-//            System.out.println("Successfully wrote to the file.");
-//        } catch (IOException e) {
-//            System.out.println("An error occurred.");
-//            e.printStackTrace();
+//    private int findIndex(String[] headers, String columnName) {
+//        for (int i = 0; i < headers.length; i++) {
+//            if (headers[i].equalsIgnoreCase(columnName)) {
+//                return i;
+//            }
 //        }
+//        throw new IllegalArgumentException("Columns not found: " + columnName);
 //    }
+
+    public void restoreWeatherFromFileToDatabase(String fileName, String desiredDate, String desiredCityName) {
+        Location wetherLocation = weatherImplementation.getLocationByName(desiredCityName);
+
+        try {CSVReader csvReader = new CSVReader(new FileReader(fileName));
+            session.beginTransaction();
+
+//            String[] headers = csvReader.readNext();
+            String[] row;
+            while ((row = csvReader.readNext()) != null) {
+//                int cityNameIndex = findIndex(headers, "cityName");
+//                int dateIndex = findIndex(headers, "date");
+//                int humidityIndex = findIndex(headers, "humidity");
+//                int pressureIndex = findIndex(headers, "pressure");
+//                int temperatureIndex = findIndex(headers, "temperature");
+//                int windDirectionIndex = findIndex(headers, "windDirection");
+//                int windSpeedIndex = findIndex(headers, "windSpeed");
+
+                String cityName = row[0];
+                String date = row[1];
+
+                if (date.equalsIgnoreCase(desiredDate) && cityName.equalsIgnoreCase(desiredCityName)) {
+                    int humidity = Integer.parseInt(row[2]);
+                    int pressure = Integer.parseInt(row[3]);
+                    int temperature = Integer.parseInt(row[4]);
+                    String windDirection = row[5];
+                    int windSpeed = Integer.parseInt(row[6]);
+
+                    Weather weather = new Weather();
+                    weather.setLocation(wetherLocation);
+                    weather.setCityName(cityName);
+                    weather.setDate(date);
+                    weather.setHumidity(humidity);
+                    weather.setPressure(pressure);
+                    weather.setTemperature(temperature);
+                    weather.setWindDirection(windDirection);
+                    weather.setWindSpeed(windSpeed);
+
+                    weatherImplementation.saveToDatabase(weather);
+                }
+            }
+
+            session.getTransaction().commit();
+
+            System.out.println("Data successfully restored from file to database.");
+        } catch(IOException | CsvValidationException e) {
+            System.out.println("An error occurred while reading the Excel file.");
+            e.printStackTrace();
+        }
+    }
 }

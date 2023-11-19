@@ -2,17 +2,16 @@ package weatherSystem.Service;
 
 import org.hibernate.query.Query;
 import weatherSystem.Entity.AvgWeather;
-import weatherSystem.Entity.Weather;
 import weatherSystem.Repository.AvgWeatherRepository;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import weatherSystem.connection.Connection;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class AvgWeatherImplementation implements AvgWeatherRepository {
-     Session session = Connection.sessionFactory.openSession();
+    private final Session session = Connection.sessionFactory.openSession();
+    AvgWeather avgWeatherData = new AvgWeather();
 
     @Override
     public void calculatAarage(String cityName, String date) {
@@ -28,8 +27,6 @@ public class AvgWeatherImplementation implements AvgWeatherRepository {
 
             List<Object[]> result = query.list();
 
-            AvgWeather avgWeatherData = new AvgWeather();
-
             if (!result.isEmpty()) {
                 Object[] averages = result.get(0);
 
@@ -42,6 +39,7 @@ public class AvgWeatherImplementation implements AvgWeatherRepository {
 
             System.out.println(Arrays.toString(averages));
             }
+            session.persist(avgWeatherData);
             session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,7 +48,7 @@ public class AvgWeatherImplementation implements AvgWeatherRepository {
 
 //    @Override
 //    public void saveAvgToDatabase(AvgWeather avgWeatherData) {
-//        try(Session session = Connection.sessionFactory.openSession()) {
+//        try {
 //            session.beginTransaction();
 //            session.persist(avgWeatherData);
 //            System.out.println("Weather data successfully saved to database.");

@@ -10,8 +10,8 @@ import weatherSystem.connection.Connection;
 import java.util.List;
 
 public class LocationImplementation implements LocationRepository {
-     EntityManager entityManager = Connection.sessionFactory.createEntityManager();
-     Session session = Connection.sessionFactory.openSession();
+    private final EntityManager entityManager = Connection.sessionFactory.createEntityManager();
+    private Session session = Connection.sessionFactory.openSession();
 
     @Override
     public void addLocation(Location location) {
