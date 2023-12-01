@@ -1,4 +1,4 @@
-package weatherSystem.Service;
+package weatherSystem.service;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
@@ -6,8 +6,8 @@ import com.opencsv.exceptions.CsvValidationException;
 import org.hibernate.Session;
 
 
-import weatherSystem.Entity.Location;
-import weatherSystem.Entity.Weather;
+import weatherSystem.entity.Location;
+import weatherSystem.entity.Weather;
 import weatherSystem.connection.Connection;
 
 import java.io.*;
@@ -16,9 +16,9 @@ import java.util.List;
 
 public class ToFileService {
     private final static Session session = Connection.sessionFactory.openSession();
-//    LocationImplementation locationImplementation = new LocationImplementation();
+//    LocationService locationImplementation = new LocationService();
 
-    private WeatherImplementation weatherImplementation = new WeatherImplementation();
+    private WeatherService weatherImplementation = new WeatherService();
 
     public void createFile(String fileName) {
         try {
@@ -35,7 +35,7 @@ public class ToFileService {
         }
     }
 
-    public void writeDataToFile(String fileName, String date, String cityName) {
+    public void writeWeatherDataToFile(String fileName, String date, String cityName) {
         try(CSVWriter csvWriter = new CSVWriter(new FileWriter(fileName))) {
             session.beginTransaction();
 
@@ -87,8 +87,8 @@ public class ToFileService {
             session.beginTransaction();
 
 //            String[] headers = csvReader.readNext();
-            String[] row;
-            while ((row = csvReader.readNext()) != null) {
+            String[] column;
+            while ((column = csvReader.readNext()) != null) {
 //                int cityNameIndex = findIndex(headers, "cityName");
 //                int dateIndex = findIndex(headers, "date");
 //                int humidityIndex = findIndex(headers, "humidity");
@@ -97,15 +97,15 @@ public class ToFileService {
 //                int windDirectionIndex = findIndex(headers, "windDirection");
 //                int windSpeedIndex = findIndex(headers, "windSpeed");
 
-                String cityName = row[0];
-                String date = row[1];
+                String cityName = column[0];
+                String date = column[1];
 
                 if (date.equalsIgnoreCase(desiredDate) && cityName.equalsIgnoreCase(desiredCityName)) {
-                    int humidity = Integer.parseInt(row[2]);
-                    int pressure = Integer.parseInt(row[3]);
-                    int temperature = Integer.parseInt(row[4]);
-                    String windDirection = row[5];
-                    int windSpeed = Integer.parseInt(row[6]);
+                    int humidity = Integer.parseInt(column[2]);
+                    int pressure = Integer.parseInt(column[3]);
+                    int temperature = Integer.parseInt(column[4]);
+                    String windDirection = column[5];
+                    int windSpeed = Integer.parseInt(column[6]);
 
                     Weather weather = new Weather();
                     weather.setLocation(wetherLocation);

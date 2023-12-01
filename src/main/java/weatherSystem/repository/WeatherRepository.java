@@ -1,6 +1,6 @@
-package weatherSystem.Repository;
+package weatherSystem.repository;
 
-import weatherSystem.Entity.Weather;
+import weatherSystem.entity.Weather;
 
 import java.io.IOException;
 

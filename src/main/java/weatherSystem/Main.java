@@ -3,12 +3,12 @@ package weatherSystem;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import weatherSystem.Entity.Location;
-import weatherSystem.Entity.Weather;
-import weatherSystem.Service.AvgWeatherImplementation;
-import weatherSystem.Service.LocationImplementation;
-import weatherSystem.Service.ToFileService;
-import weatherSystem.Service.WeatherImplementation;
+import weatherSystem.entity.Location;
+import weatherSystem.entity.Weather;
+import weatherSystem.service.AvgWeatherService;
+import weatherSystem.service.LocationService;
+import weatherSystem.service.ToFileService;
+import weatherSystem.service.WeatherService;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,28 +37,31 @@ public class Main {
 //        Main yourClass = new Main();
 //        yourClass.readCSVFile("file_data.csv");
 
-        LocationImplementation locationImplementation = new LocationImplementation();
-        WeatherImplementation weatherImplementation = new WeatherImplementation();
-        AvgWeatherImplementation avgWeather = new AvgWeatherImplementation();
+        LocationService locationService = new LocationService();
+        WeatherService weatherService = new WeatherService();
+        AvgWeatherService avgWeather = new AvgWeatherService();
         ToFileService toFileService = new ToFileService();
 
         Scanner scanner = new Scanner(System.in);
 
         while(true) {
-            System.out.println("\nPlease chose an option from fallowing:\n" +
-                    "1. To add a new location.\n" +
-                    "2. To edit location\n" +
-                    "3. To display all locations added.\n" +
-                    "4. To insert weather values.\n" +
-                    "5. To retrieve average values.\n" +
-                    "6. To retrieve weather statistics by period.\n" +
-                    "7. To create a file or save data into a file.\n" +
-                    "8. To restore data from file to database\n" +
-                    "9. To exit.");
-            int optNo = scanner.nextInt();
+            System.out.println("""
+
+                    Please chose an option from fallowing:
+                    1. To add a new location.
+                    2. To edit location
+                    3. To display all locations added.
+                    4. To insert weather values.
+                    5. To retrieve average values.
+                    6. To retrieve weather statistics by period.
+                    7. To create a file or save data into a file.
+                    8. To restore data from file to database
+                    9. To exit.""");
+
+            int optMainSwitch = scanner.nextInt();
             scanner.nextLine();
 
-            switch (optNo) {
+            switch (optMainSwitch) {
                 case 1:
                     System.out.println("Enter city name:");
                     String cityName = scanner.nextLine();
@@ -76,7 +79,7 @@ public class Main {
                     double longitude = scanner.nextDouble();
 
                     Location location = new Location(cityName, region, countryName, latitude, longitude);
-                    locationImplementation.addLocation(location);
+                    locationService.addLocation(location);
                     System.out.println("Location added successfully.");
                     break;
 
@@ -86,11 +89,11 @@ public class Main {
                     System.out.println("Enter location's new name.");
                     String newLocation = scanner.nextLine();
 
-                    locationImplementation.editLocation(location1, newLocation);
+                    locationService.editLocation(location1, newLocation);
                     break;
 
                 case 3:
-                    locationImplementation.getLocations();
+                    locationService.getLocations();
                     break;
 
                 case 4:
@@ -100,18 +103,20 @@ public class Main {
                     System.out.println("Enter location:");
                     cityName = scanner.nextLine();
 
-                    System.out.println("Please chose:\n" +
-                            "1. To download the weather data from internet.\n" +
-                            "2. To insert manually the weather data from keyboard.");
+                    System.out.println("""
+                            Please chose:
+                            1. To download the weather data from internet.
+                            2. To insert manually the weather data from keyboard.""");
 
-                    int opt = scanner.nextInt();
-                    if (opt == 1 || opt == 2) {
-                        switch (opt) {
+                    int optNo2 = scanner.nextInt();
+                    scanner.nextLine();
+                    if (optNo2 == 1 || optNo2 == 2) {
+                        switch (optNo2) {
                             case 1:
                                 try {
-                                    Weather stackWeatherData = weatherImplementation.collectDataFromWeatherStack(cityName, date);
-                                    weatherImplementation.displayWeatherData(stackWeatherData);
-                                    weatherImplementation.saveToDatabase(stackWeatherData);
+                                    Weather stackWeatherData = weatherService.collectDataFromWeatherStack(cityName, date);
+                                    weatherService.displayWeatherData(stackWeatherData);
+                                    weatherService.saveToDatabase(stackWeatherData);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -130,8 +135,8 @@ public class Main {
                                 weather.setWindDirection(scanner.next());
                                 weather.setCityName(cityName);
                                 weather.setDate(date);
-                                weather.setLocation(weatherImplementation.getLocationByName(cityName));
-                                weatherImplementation.saveToDatabase(weather);
+                                weather.setLocation(weatherService.getLocationByName(cityName));
+                                weatherService.saveToDatabase(weather);
                         }
                     } else {
                         System.out.println("Invalid option. You have to chose 1 or 2.");
@@ -149,19 +154,20 @@ public class Main {
                 case 6:
                     System.out.println("Enter the date for statistics:");
                     date = scanner.nextLine();
-                    weatherImplementation.getStatisticsByPeriod(date);
+                    weatherService.getStatisticsByPeriod(date);
                     break;
 
                 case 7:
-                    System.out.println("Please chose:\n" +
-                            "1. To create a new file.\n" +
-                            "2. To save data to a file.");
+                    System.out.println("""
+                            Please chose:
+                            1. To create a new file.
+                            2. To save data to a file.""");
 
-                    opt = scanner.nextInt();
+                    int optNo3 = scanner.nextInt();
                     scanner.nextLine();
 
-                    if (opt == 1 || opt == 2) {
-                        switch (opt) {
+                    if (optNo3 == 1 || optNo3 == 2) {
+                        switch (optNo3) {
                             case 1:
                                 System.out.println("Enter the file name.");
                                 String fileName = scanner.nextLine().trim();
@@ -176,7 +182,7 @@ public class Main {
                                 date = scanner.nextLine();
                                 System.out.println("Enter the city name for statistics to save into the file");
                                 cityName = scanner.nextLine();
-                                toFileService.writeDataToFile(fileName, date, cityName);
+                                toFileService.writeWeatherDataToFile(fileName, date, cityName);
                                 break;
                         }
                     } else {

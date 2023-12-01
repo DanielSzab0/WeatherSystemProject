@@ -1,4 +1,4 @@
-package weatherSystem.Entity;
+package weatherSystem.entity;
 
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;

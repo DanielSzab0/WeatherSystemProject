@@ -1,11 +1,11 @@
-package weatherSystem.Service;
+package weatherSystem.service;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import weatherSystem.Entity.Location;
-import weatherSystem.Entity.Weather;
-import weatherSystem.Repository.WeatherRepository;
+import weatherSystem.entity.Location;
+import weatherSystem.entity.Weather;
+import weatherSystem.repository.WeatherRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import weatherSystem.connection.Connection;
@@ -18,7 +18,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-public class WeatherImplementation implements WeatherRepository {
+public class WeatherService implements WeatherRepository {
     private final Session session = Connection.sessionFactory.openSession();
     private static final String WEATHERSTACK_API_KEY = "8ebca2f498ca14abd209c784636ad015";
     private static final String WEATHERSTACK_API_URL = "http://api.weatherstack.com/current";
@@ -117,8 +117,6 @@ public class WeatherImplementation implements WeatherRepository {
                     System.out.println(w.getId() + ". " + w.getDate() + ", " + w.getCityName() + ", Temperature: " +
                             w.getTemperature() + ", Humidity: " + w.getHumidity() + ", Pressure: " + w.getPressure() +
                             ", Wind speed: " + w.getWindSpeed() + ", Wind direction: " + w.getWindDirection() + "."));
-            System.out.println();
-            System.out.println(Arrays.toString(new List[]{weathers}));
             return weathers;
         } catch (Exception e) {
             System.out.println("Invalid data input");

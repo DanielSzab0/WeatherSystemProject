@@ -2,9 +2,9 @@ package weatherSystem.connection;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import weatherSystem.Entity.AvgWeather;
-import weatherSystem.Entity.Location;
-import weatherSystem.Entity.Weather;
+import weatherSystem.entity.AvgWeather;
+import weatherSystem.entity.Location;
+import weatherSystem.entity.Weather;
 
 
 public class Connection {

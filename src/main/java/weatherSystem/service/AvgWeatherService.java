@@ -1,15 +1,15 @@
-package weatherSystem.Service;
+package weatherSystem.service;
 
 import org.hibernate.query.Query;
-import weatherSystem.Entity.AvgWeather;
-import weatherSystem.Repository.AvgWeatherRepository;
+import weatherSystem.entity.AvgWeather;
+import weatherSystem.repository.AvgWeatherRepository;
 import org.hibernate.Session;
 import weatherSystem.connection.Connection;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class AvgWeatherImplementation implements AvgWeatherRepository {
+public class AvgWeatherService implements AvgWeatherRepository {
     private final Session session = Connection.sessionFactory.openSession();
     AvgWeather avgWeatherData = new AvgWeather();
 

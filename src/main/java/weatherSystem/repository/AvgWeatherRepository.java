@@ -1,6 +1,4 @@
-package weatherSystem.Repository;
-
-import weatherSystem.Entity.AvgWeather;
+package weatherSystem.repository;
 
 public interface AvgWeatherRepository{
     void calculatAarage(String cityName, String date);

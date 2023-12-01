@@ -1,6 +1,6 @@
-package weatherSystem.Repository;
+package weatherSystem.repository;
 
-import weatherSystem.Entity.Location;
+import weatherSystem.entity.Location;
 
 import java.util.List;
 

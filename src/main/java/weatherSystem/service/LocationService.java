@@ -1,15 +1,15 @@
-package weatherSystem.Service;
+package weatherSystem.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import org.hibernate.Session;
-import weatherSystem.Entity.Location;
-import weatherSystem.Repository.LocationRepository;
+import weatherSystem.entity.Location;
+import weatherSystem.repository.LocationRepository;
 import weatherSystem.connection.Connection;
 
 import java.util.List;
 
-public class LocationImplementation implements LocationRepository {
+public class LocationService implements LocationRepository {
     private final EntityManager entityManager = Connection.sessionFactory.createEntityManager();
     private Session session = Connection.sessionFactory.openSession();
 
@@ -29,7 +29,7 @@ public class LocationImplementation implements LocationRepository {
     @Override
     public List<Location> getLocations() {
         List<Location> locations = entityManager.createQuery("FROM Location", Location.class).getResultList();
-        locations.forEach(loc-> System.out.println(loc.getId()+ ". " +loc.getCityName()+ ", " +loc.getCountryName() + "."));
+        locations.forEach(loc -> System.out.println(loc.getId()+ ". " +loc.getCityName()+ ", " +loc.getCountryName() + "."));
         return locations;
     }
 
