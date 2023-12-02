@@ -71,15 +71,6 @@ public class ToFileService {
         }
     }
 
-//    private int findIndex(String[] headers, String columnName) {
-//        for (int i = 0; i < headers.length; i++) {
-//            if (headers[i].equalsIgnoreCase(columnName)) {
-//                return i;
-//            }
-//        }
-//        throw new IllegalArgumentException("Columns not found: " + columnName);
-//    }
-
     public void restoreWeatherFromFileToDatabase(String fileName, String desiredDate, String desiredCityName) {
         Location wetherLocation = weatherImplementation.getLocationByName(desiredCityName);
 

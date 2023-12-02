@@ -14,7 +14,7 @@ public class AvgWeatherService implements AvgWeatherRepository {
     AvgWeather avgWeatherData = new AvgWeather();
 
     @Override
-    public void calculatAarage(String cityName, String date) {
+    public void calculateAverage(String cityName, String date) {
         try{
             session.beginTransaction();
 

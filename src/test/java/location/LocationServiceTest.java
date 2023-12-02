@@ -4,11 +4,8 @@ import org.junit.jupiter.api.*;
 import weatherSystem.entity.Location;
 import weatherSystem.service.LocationService;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -47,13 +44,11 @@ public class LocationServiceTest {
                 "2. Bucuresti, Romania.",
                 "3. Constanta, Romania."
         );
-        expectedLocations.sort(Comparator.naturalOrder());
 
         List<Location> result = locationService.getLocations();
 
         List<String> actualLocations = result.stream()
                 .map(location -> location.getId() + ". " + location.getCityName() + ", " + location.getCountryName() + ".")
-                .sorted(Comparator.naturalOrder())
                 .toList();
 
         assertEquals(expectedLocations, actualLocations);

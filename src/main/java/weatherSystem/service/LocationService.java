@@ -11,7 +11,7 @@ import java.util.List;
 
 public class LocationService implements LocationRepository {
     private final EntityManager entityManager = Connection.sessionFactory.createEntityManager();
-    private Session session = Connection.sessionFactory.openSession();
+    private final Session session = Connection.sessionFactory.openSession();
 
     @Override
     public void addLocation(Location location) {
@@ -28,7 +28,7 @@ public class LocationService implements LocationRepository {
 
     @Override
     public List<Location> getLocations() {
-        List<Location> locations = entityManager.createQuery("FROM Location", Location.class).getResultList();
+        List<Location> locations = entityManager.createQuery("FROM Location ORDER BY id", Location.class).getResultList();
         locations.forEach(loc -> System.out.println(loc.getId()+ ". " +loc.getCityName()+ ", " +loc.getCountryName() + "."));
         return locations;
     }

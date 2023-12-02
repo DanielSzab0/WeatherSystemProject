@@ -17,25 +17,24 @@ import java.util.Scanner;
 
 public class Main {
 
-    public void readCSVFile(String fileName) {
-        try {
-            CSVParser csvParser = CSVFormat.DEFAULT.parse(Files.newBufferedReader(Paths.get(fileName)));
+//    public static void readCSVFile(String fileName) {
+//        try {
+//            CSVParser csvParser = CSVFormat.DEFAULT.parse(Files.newBufferedReader(Paths.get(fileName)));
+//
+//            for (CSVRecord csvRecord : csvParser) {
+//                String cityName = csvRecord.get(0);
+//                String date = csvRecord.get(1);
+//
+//                System.out.println("City: " + cityName + ", Date: " + date);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-            for (CSVRecord csvRecord : csvParser) {
-                String cityName = csvRecord.get(0);
-                String date = csvRecord.get(1);
+    public static void main(String[] args) {
 
-                System.out.println("City: " + cityName + ", Date: " + date);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void main(String[] args) throws IOException {
-
-//        Main yourClass = new Main();
-//        yourClass.readCSVFile("file_data.csv");
+//        readCSVFile("file_data.csv");
 
         LocationService locationService = new LocationService();
         WeatherService weatherService = new WeatherService();
@@ -148,7 +147,7 @@ public class Main {
                     cityName = scanner.nextLine();
                     System.out.println("Enter the date:");
                     date = scanner.nextLine();
-                    avgWeather.calculatAarage(cityName, date);
+                    avgWeather.calculateAverage(cityName, date);
                     break;
 
                 case 6:
